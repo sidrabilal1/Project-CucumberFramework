@@ -1,0 +1,44 @@
+Cucumber Framework Development for User Stories
+
+Key Checkpoints for the Framework:
+- Runner Class: Able to execute the test cases.
+- Common Classes: Organizing reusable code across the framework.
+- Config Read & Config Properties Files: To load configuration settings.
+- Constants: Define constants used throughout the framework.
+- Page Initializers: Initializing page objects.
+- Pages (Page Factory): Implementing page objects using the Page Factory design pattern.
+
+User Story: Login Validation for HRMs Portal
+As a user attempting to log into the HRM portal,
+I want clear and specific error messages during the login process,
+So that I can understand if my login attempt failed due to missing fields or incorrect credentials.
+
+Acceptance Criteria:
+If a user attempts to log in with an empty username field, the system should display an error message stating "Username cannot be empty."
+2. If a user attempts to log in with an empty password field, the system should display an error message stating "Password is empty."
+3. If a user enters incorrect login credentials (either the wrong username or password), the system should display an error message stating "Invalid credentials."
+4. The error messages should be clear and easily visible to the user, ideally placed near the respective input fields.
+5. After displaying the error message, the system should allow the user to correct their input and attempt to log in again.
+User Story: Add Employee to HRMS
+As an admin user,
+I want to be able to add an employee to the HRMS application, either with or without providing a unique employee ID,
+So that the system can generate or accept a unique employee ID and store the employee's details properly.
+
+Acceptance Criteria:
+An admin user should be able to add an employee to the HRMS application without providing an employee ID. The system should automatically generate a unique employee ID for the new employee.
+  - Required fields for this process:
+    - First Name
+    - Middle Name (optional)
+    - Last Name
+2. An admin user should also have the option to add an employee to the HRMS application by providing a unique employee ID.
+  - Required fields for this process:
+    - First Name
+    - Middle Name (optional)
+    - Last Name
+    - Employee ID
+3. The system should provide appropriate error messages or prompts for users who attempt to submit incomplete or invalid employee information. Error messages should be:
+  - Clear
+  - Easily visible
+  - Placed near the respective input fields.
+
+public static final int randomID = (int)(Math.random() * 1000000 - Math.random()*3 + Math.random());

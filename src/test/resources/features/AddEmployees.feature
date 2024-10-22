@@ -24,14 +24,19 @@ Feature: Add employee to HRMS
     Then user added successfully
 
   @addEmp @incompleteDetails
-  Scenario: Add Employee with incomplete details
-    When user enters incomplete details
+  Scenario Outline: Add Employee with incomplete details
+    When user enters incomplete "<firstName>" "<middleName>" "<lastName>"
     And user clicks on save button
-    Then user sees required error message
+    Then user sees "<errorMessage>" on the "<missingField>"
+    Examples:
+      | firstName | middleName | lastName | errorMessage |missingField|
+      |           | MS         | data     | Required     |firstName   |
+      | dummy     |            |          | Required     |lastName    |
+
 
   @addEmp @invalidDetails
   Scenario: Add Employee with invalid details
     When user enters firstname middlename and lastname in the name fields
     And user enters existing employee ID "15258329"
     And user clicks on save button
-    Then user sees "Failed To Save: Employee Id Exists"
+    Then user sees error message "Failed To Save: Employee Id Exists" on entering invalid employee ID

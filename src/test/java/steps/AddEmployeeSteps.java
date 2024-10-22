@@ -1,7 +1,5 @@
 package steps;
 
-
-
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -43,6 +41,8 @@ public class AddEmployeeSteps extends CommonMethods {
     public void user_enters_firstname_middlename_and_lastname_in_the_name_fields() {
 
         List<Map<String, String>> employeeNames = ExcelReader.readExcel();
+        int count = 1;
+
         for (Map<String, String> employee : employeeNames) {
             sendText(employee.get("firstName"), addEmployeePage.firstNameField);
             firstName = employee.get("firstName");
@@ -50,6 +50,12 @@ public class AddEmployeeSteps extends CommonMethods {
             middleName = employee.get("middleName");
             sendText(employee.get("lastName"), addEmployeePage.lastNameField);
             lastName = employee.get("lastName");
+            if (count < employeeNames.size()) {
+                user_clicks_on_save_button();
+                user_added_successfully();
+                user_clicks_on_add_employee_option();
+            }
+            count++;
         }
 
     }
@@ -65,21 +71,21 @@ public class AddEmployeeSteps extends CommonMethods {
         Assert.assertEquals(employeeFullName, employeeListPage.employeeFullName.getText());
     }
 
-    @When("user enters incomplete details")
-    public void user_enters_incomplete_details() {
-        sendText("", addEmployeePage.firstNameField);
-        sendText("", addEmployeePage.lastNameField);
+    @When("user enters unique employee Id")
+    public void user_enters_unique_employee_id() {
+        sendText(uniqueId(), addEmployeePage.employeeId);
     }
 
-    @Then("user sees required error message")
-    public void user_sees_required_error_message() {
-        Assert.assertTrue(addEmployeePage.firstNameErrorMsg.isDisplayed());
-        Assert.assertTrue(addEmployeePage.lastNameErrorMsg.isDisplayed());
-        Assert.assertEquals("Required", addEmployeePage.firstNameErrorMsg.getText());
-        Assert.assertEquals("Required", addEmployeePage.lastNameErrorMsg.getText());
-        Assert.assertEquals(elementLocation(addEmployeePage.firstNameErrorMsg).getX(), elementLocation(addEmployeePage.firstNameField).getX());
-        Assert.assertEquals(elementLocation(addEmployeePage.lastNameErrorMsg).getX(), elementLocation(addEmployeePage.lastNameField).getX());
+    @When("user enters incomplete {string} {string} {string}")
+    public void user_enters_incomplete(String firstName, String middleName, String lastName) {
+        sendText(firstName, addEmployeePage.firstNameField);
+        sendText(middleName, addEmployeePage.middleNameField);
+        sendText(lastName, addEmployeePage.lastNameField);
+    }
 
+    @Then("user sees {string} on the {string}")
+    public void user_sees_on_entering_incomplete_details(String errorMessage, String missingField) {
+        Assert.assertEquals(errorMessage, addEmployeePage.addEmployeeErrorMessage(missingField));
     }
 
     @When("user enters existing employee ID {string}")
@@ -87,15 +93,8 @@ public class AddEmployeeSteps extends CommonMethods {
         sendText(empId, addEmployeePage.employeeId);
     }
 
-    @Then("user sees {string}")
-    public void user_sees_failed_to_save_employee_id_exists(String errorMsg) {
-        String actualErrorMsg = addEmployeePage.existingEmpIdErrorMsg.getText();
-        Assert.assertTrue(actualErrorMsg.contains(errorMsg));
+    @Then("user sees error message {string} on entering invalid employee ID")
+    public void user_sees_error_message_on_entering_invalid_employee_ID(String errorMessage) {
+        Assert.assertTrue(addEmployeePage.existingEmpIdErrorMsg.getText().contains(errorMessage));
     }
-
-    @When("user enters unique employee Id")
-    public void user_enters_unique_employee_id() {
-        sendText(uniqueId(), addEmployeePage.employeeId);
-    }
-
 }

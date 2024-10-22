@@ -1,5 +1,6 @@
 package pages;
 
+import org.apache.poi.xwpf.usermodel.Document;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -7,7 +8,7 @@ import utils.CommonMethods;
 
 public class AddEmployeePage extends CommonMethods {
 
-    @FindBy(id="menu_pim_addEmployee")
+    @FindBy(id = "menu_pim_addEmployee")
     public WebElement addEmployeeOption;
 
     @FindBy(xpath = "//div[@class='head']/h1")
@@ -34,10 +35,28 @@ public class AddEmployeePage extends CommonMethods {
     @FindBy(xpath = "//span[@for='lastName']")
     public WebElement lastNameErrorMsg;
 
+    @FindBy(xpath = "//span[@for='user_name']")
+    public WebElement userNameErrorMsg;
+
+    @FindBy(xpath = "//span[@for='user_password']")
+    public WebElement userPasswordErrorMsg;
+
     @FindBy(xpath = "//div[@class='message warning fadable']")
     public WebElement existingEmpIdErrorMsg;
 
-    public AddEmployeePage(){
-        PageFactory.initElements(driver,this);
+    public AddEmployeePage() {
+        PageFactory.initElements(driver, this);
+    }
+
+    public String addEmployeeErrorMessage(String inputField) {
+
+        String errorMessage = switch (inputField) {
+            case "firstName" -> firstNameErrorMsg.getText();
+            case "lastName" -> lastNameErrorMsg.getText();
+            case "userName" -> userNameErrorMsg.getText();
+            case "password" -> userPasswordErrorMsg.getText();
+            default -> null;
+        };
+        return errorMessage;
     }
 }

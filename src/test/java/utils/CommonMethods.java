@@ -54,54 +54,56 @@ public class CommonMethods extends PageInitializer {
         }
     }
 
-    public void sendText(String text, WebElement element){
+    public void sendText(String text, WebElement element) {
         element.clear();
         element.sendKeys(text);
     }
 
-    public Point elementLocation(WebElement element){
-        Point location = element.getLocation();
-        return location;
-    }
-
-    public void click(WebElement element){
+    public void click(WebElement element) {
         waitForElementToBeClickable(element);
         element.click();
     }
 
-    public void waitForElementToBeClickable(WebElement element){
+    public void waitForElementToBeClickable(WebElement element) {
         getWait().until(ExpectedConditions.elementToBeClickable(element));
     }
 
-    public WebDriverWait getWait(){
+    public WebDriverWait getWait() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(Constants.EXPLICIT_WAIT));
         return wait;
     }
 
-    public byte[] takeScreenshot(String fileName){
+    public byte[] takeScreenshot(String fileName) {
 
         TakesScreenshot ts = (TakesScreenshot) driver;
         byte[] picByte = ts.getScreenshotAs(OutputType.BYTES);
         File sourceFile = ts.getScreenshotAs(OutputType.FILE);
 
-        try{
+        try {
             FileUtils.copyFile(sourceFile, new File(Constants.SCREENSHOT_FILE_PATH + fileName + " " +
-                    getTimeStamp("yyyy-MM-dd-HH-mm-ss")+".png"));
-        } catch (IOException ioException){
+                    getTimeStamp("yyyy-MM-dd-HH-mm-ss") + ".png"));
+        } catch (IOException ioException) {
             ioException.printStackTrace();
         }
         return picByte;
     }
 
-    public String getTimeStamp(String pattern){
+    public String getTimeStamp(String pattern) {
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         return sdf.format(date);
     }
 
-    public String uniqueId(){
-        String generateUUIDNo = String.format("%010d",new BigInteger(UUID.randomUUID().toString().replace("-",""),16));
-        String unique_no = generateUUIDNo.substring( generateUUIDNo.length() - 10);
-        return unique_no;
+    public String uniqueId() {
+        int min = 100000;
+        int max = 1000000;
+        int unique_no = (int) (Math.random() * (max - min) + min);
+        return String.valueOf(unique_no);
+
+        //alternative method
+        //String generateUUIDNo = String.format("%010d", new BigInteger(UUID.randomUUID().toString().replace("-", ""), 16));
+        //String unique_no = generateUUIDNo.substring(generateUUIDNo.length() - 10);
+        //return unique_no
     }
+
 }

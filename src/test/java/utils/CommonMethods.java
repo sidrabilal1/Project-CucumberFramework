@@ -106,4 +106,13 @@ public class CommonMethods extends PageInitializer {
         //return unique_no
     }
 
+    public static int apiStatusCode(String requestType) {
+
+        int statusCode = switch (requestType) {
+            case "POST", "PATCH" -> 201;
+            case "GET", "PUT", "DELETE" -> 200;
+            default -> 0;
+        };
+        return statusCode;
+    }
 }

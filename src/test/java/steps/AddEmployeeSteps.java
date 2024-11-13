@@ -1,21 +1,22 @@
 package steps;
 
-import io.cucumber.java.en.And;
+
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 import utils.CommonMethods;
+import utils.DbReader;
 import utils.ExcelReader;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class AddEmployeeSteps extends CommonMethods {
 
     public String firstName;
     public String middleName;
     public String lastName;
+    public String employeeId;
 
     @When("user clicks on PIM option")
     public void user_clicks_on_pim_option() {
@@ -50,10 +51,12 @@ public class AddEmployeeSteps extends CommonMethods {
             middleName = employee.get("middleName");
             sendText(employee.get("lastName"), addEmployeePage.lastNameField);
             lastName = employee.get("lastName");
+            employeeId = addEmployeePage.employeeId.getAttribute("value");
             if (count < employeeNames.size()) {
                 user_clicks_on_save_button();
-                user_added_successfully();
+                employee_added_successfully();
                 user_clicks_on_add_employee_option();
+                employee_details_are_verified_from_backend();
             }
             count++;
         }
@@ -65,10 +68,22 @@ public class AddEmployeeSteps extends CommonMethods {
         click(addEmployeePage.saveButton);
     }
 
-    @Then("user added successfully")
-    public void user_added_successfully() {
+    @Then("employee added successfully")
+    public void employee_added_successfully() {
         String employeeFullName = firstName + " " + middleName + " " + lastName;
         Assert.assertEquals(employeeFullName, employeeListPage.employeeFullName.getText());
+    }
+
+    @Then("employee details are verified from backend")
+    public void employee_details_are_verified_from_backend() {
+        String query = "Select emp_firstname,emp_middle_name,emp_lastname from hs_hr_employees where employee_id = " + employeeId;
+        List<Map<String, String>> dataFromDb = DbReader.fetch(query);
+        String actualFN = dataFromDb.get(0).get("emp_firstname");
+        String actualMN = dataFromDb.get(0).get("emp_middle_name");
+        String actualLN = dataFromDb.get(0).get("emp_lastname");
+        Assert.assertEquals(firstName, actualFN);
+        Assert.assertEquals(middleName, actualMN);
+        Assert.assertEquals(lastName, actualLN);
     }
 
     @When("user enters unique employee Id")
